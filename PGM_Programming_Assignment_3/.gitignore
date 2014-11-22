@@ -1,0 +1,4 @@
+# ignore inference folder,
+/inference/
+# except doinference-linux which is maintained by hand
+!/inference/doinference-linux
