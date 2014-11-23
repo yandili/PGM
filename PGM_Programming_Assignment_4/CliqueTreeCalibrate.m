@@ -24,7 +24,7 @@ MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 % We have split the coding part for this function in two chunks with
 % specific comments. This will make implementation much easier.
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -36,15 +36,45 @@ MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 % Remember that you only need an upward pass and a downward pass.
 %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[i,j] = GetNextCliques(P,MESSAGES);
+while i&&j ~= 0 % all msgs passed
 
+  F = P.cliqueList(i);
+  for k = 1:N
+    if k == j continue; end
+    msg = MESSAGES(k, i); % all msgs to i except for j
+    F = FactorProduct(F, msg);
+  end
+
+  sepSetNeg = setdiff(F.var, P.cliqueList(j).var);
+  F = FactorMarginalization(F, sepSetNeg);
+
+  % Normalize msg factor
+  partitionFunc = sum(F.val);
+  F.val = F.val ./ partitionFunc;
+
+  F = StandardizeFactors(F);
+  MESSAGES(i,j) = F;
+
+  [i,j] = GetNextCliques(P,MESSAGES);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % YOUR CODE HERE
 %
 % Now the clique tree has been calibrated. 
 % Compute the final potentials for the cliques and place them in P.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for i = 1:N
+  F = P.cliqueList(i);
+  for k = 1:N
+    msg = MESSAGES(k, i); % all msgs to i except for j
+    F = FactorProduct(F, msg);
+  end
 
+  F = StandardizeFactors(F);
+  P.cliqueList(i) = F;
 
+end
 
 return
