@@ -11,6 +11,7 @@
 
 function P = CliqueTreeCalibrate(P, isMax)
 
+if nargin < 2, isMax = 0; end
 
 % Number of cliques in the tree.
 N = length(P.cliqueList);
@@ -25,6 +26,13 @@ MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 % specific comments. This will make implementation much easier.
 %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Does a log-transform of the values in the 
+% factors/cliques using natural log, then max-calibrates it afterwards
+if isMax ~= 0
+  for i = 1:N
+    P.cliqueList(i).val = log(P.cliqueList(i).val);
+  end
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -43,33 +51,44 @@ while i&&j ~= 0 % all msgs passed
   for k = 1:N
     if k == j continue; end
     msg = MESSAGES(k, i); % all msgs to i except for j
-    F = FactorProduct(F, msg);
+    F = FactorProduct(F, msg, isMax); % call FactorSum() if isMax = 1
   end
 
   sepSetNeg = setdiff(F.var, P.cliqueList(j).var);
-  F = FactorMarginalization(F, sepSetNeg);
+  
+  if isMax == 0
+    F = FactorMarginalization(F, sepSetNeg);
+  else
+    F = FactorMaxMarginalization(F, sepSetNeg);
+  end
 
-  % Normalize msg factor
-  partitionFunc = sum(F.val);
-  F.val = F.val ./ partitionFunc;
+  % If we are working in log-space, do not normalize each message
+  % as it is passed. Else we do.
+  if isMax == 0
+    % Normalize msg factor
+    partitionFunc = sum(F.val);
+    F.val = F.val ./ partitionFunc;
+  end
 
   F = StandardizeFactors(F);
   MESSAGES(i,j) = F;
 
   [i,j] = GetNextCliques(P,MESSAGES);
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % YOUR CODE HERE
 %
 % Now the clique tree has been calibrated. 
-% Compute the final potentials for the cliques and place them in P.
+% Compute the final belief potentials for the cliques and place them in P.
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:N
+
   F = P.cliqueList(i);
   for k = 1:N
-    msg = MESSAGES(k, i); % all msgs to i except for j
-    F = FactorProduct(F, msg);
+    msg = MESSAGES(k, i); % all msgs including j
+    F = FactorProduct(F, msg, isMax);
   end
 
   F = StandardizeFactors(F);
