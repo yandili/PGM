@@ -44,6 +44,17 @@ B.val = [];
 % YOUR CODE HERE
 % Correctly set up and populate the factor values of B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Initialize B.card and B.val
+B.card = A.card(mapB); % the index in A of remaining vars
+B.val = zeros(1,prod(B.card));
 
+% Compute some helper indices
+% These will be very useful for calculating B.val
+% so make sure you understand what these lines are doing
+assignments = IndexToAssignment(1:length(A.val), A.card);
+% indxA -> indxB
+indxB = AssignmentToIndex(assignments(:, mapB), B.card);
+
+B.val = accumarray(indxB, A.val, [], @(x)(max(x)))'; % aggregation of A.val by group indices
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

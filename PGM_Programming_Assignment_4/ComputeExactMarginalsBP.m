@@ -23,5 +23,40 @@ M = [];
 %
 % Implement Exact and MAP Inference.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We need first to construct the clique tree P from F
+P = CreateCliqueTree(F, E);
+% Calibrate the clique tree
+P = CliqueTreeCalibrate(P, isMax);
+ 
+N = length(P.cliqueList); % number of cliques
+varInClique = [];
+% Find the clique that contains each variable
+for i = 1:N
+  for j = P.cliqueList(i).var
+    if j > length(varInClique) || varInClique(j) == 0
+      % the variable j hasn't found a clique number yet
+      varInClique(j) = i; 
+      continue;
+    end
+  end
+end
 
+
+M = repmat(struct('var',[],'card',[],'val',[]), length(varInClique), 1);
+% Compute marginals
+for i = 1:length(varInClique)
+  c = varInClique(i); % clique for variable i
+  % marginalize all variables other than i
+  F = P.cliqueList(c);
+  M(i) = FactorMarginalization(F, setdiff(F.var, i));
+  % normalization
+  tot = sum(M(i).val);
+  M(i).val = M(i).val ./ tot;
+end
+
+%% For debugging
+% load('PA4Sample.mat', 'SixPersonPedigree');
+% ComputeExactMarginalsBP(SixPersonPedigree, [], 0);
+% ComputeMarginal(1, SixPersonPedigree, []); % compute the marginal of var=1
+% % they agree on the first variable
 end
