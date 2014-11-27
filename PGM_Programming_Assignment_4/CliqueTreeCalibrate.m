@@ -49,7 +49,7 @@ while i&&j ~= 0 % all msgs passed
 
   F = P.cliqueList(i);
   for k = 1:N
-    if k == j continue; end
+    if k == j, continue; end
     msg = MESSAGES(k, i); % all msgs to i except for j
     F = FactorProduct(F, msg, isMax); % call FactorSum() if isMax = 1
   end

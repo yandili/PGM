@@ -48,10 +48,14 @@ for i = 1:length(varInClique)
   c = varInClique(i); % clique for variable i
   % marginalize all variables other than i
   F = P.cliqueList(c);
-  M(i) = FactorMarginalization(F, setdiff(F.var, i));
-  % normalization
-  tot = sum(M(i).val);
-  M(i).val = M(i).val ./ tot;
+  if isMax == 0
+    M(i) = FactorMarginalization(F, setdiff(F.var, i));
+    % normalization
+    tot = sum(M(i).val);
+    M(i).val = M(i).val ./ tot;
+  else
+    M(i) = FactorMaxMarginalization(F, setdiff(F.var, i));
+  end
 end
 
 %% For debugging
