@@ -27,6 +27,14 @@ function [i, j] = NaiveGetNextClusters(P, m)
     % The 'find' function may be useful
     %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % locate non-zero elems as valid edges between clusters,
+    % then find the m+1-th pair. think about spy()
+    [indi,indj] = find(P.edges);
+    % take the module if m is larger than the max index of edges
+    m = mod(m, nnz(P.edges));
+
+    i = indi(m+1);
+    j = indj(m+1);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
