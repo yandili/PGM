@@ -33,8 +33,30 @@ end;
 % YOUR CODE HERE
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is much easier than what we did with Variable Elimination,
+% there we have no idea of how the clusters look like, but now 
+% we are certain to use Bethe graph
 
+% Out of surprise, the example will provide us both the singleton factors
+% and pairwise factors.
+P.clusterList = F;
 
+% We only need to fill out the edges, an edge exists and only exists
+% between a singleton and a pairwise factor that shares a variable
+N = length(F);
+P.edges = zeros(N,N);
+for i = 1:N
+  % i is singleton factor
+  if length(F(i).var) > 1, continue; end
+  for j = i+1:N
+    % j is pairwise factor
+    if length(F(j).var) <= 1, continue; end
+    if ismember(F(i).var, F(j).var)
+      P.edges(i,j) = 1;
+      P.edges(j,i) = 1;
+    end
+  end
 
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
