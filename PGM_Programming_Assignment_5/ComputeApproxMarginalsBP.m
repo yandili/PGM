@@ -46,6 +46,12 @@ function M = ComputeApproxMarginalsBP(F,E)
         % which is defined at the bottom of this file.  Read through it
         % to make sure you understand its functionality.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        indx = FindPotentialWithVariable(P,i); % clique for variable i
+        % marginalize all vars other than i
+        F = P.clusterList(indx);
+        M(i) = FactorMarginalization(F, setdiff(F.var,i));
+        partition = sum(M(i).val);
+        M(i).val = M(i).val./partition;
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end

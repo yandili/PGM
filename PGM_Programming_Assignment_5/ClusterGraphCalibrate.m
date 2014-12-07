@@ -76,12 +76,15 @@ while (1),
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     neighbors = find(P.edges(i,:));
     parents = setdiff(neighbors, j);
+    % init by node belief
+    MESSAGES(i,j) = P.clusterList(i);
     for k = parents
-      MESSAGES(i,j) = FactorProduct(MESSAGES(k,i), P.clusterList(i));
+      MESSAGES(i,j) = FactorProduct(MESSAGES(i,j), MESSAGES(k,i));
     end
+    % marginalize
     summedOut = setdiff(MESSAGES(i,j).var, P.clusterList(j).var);
     MESSAGES(i,j) = FactorMarginalization(MESSAGES(i,j), summedOut);
-
+    % normalize
     partition = sum(MESSAGES(i,j).val);
     MESSAGES(i,j).val = MESSAGES(i,j).val./partition;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
