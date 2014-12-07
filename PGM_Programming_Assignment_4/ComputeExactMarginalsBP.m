@@ -17,6 +17,9 @@ function M = ComputeExactMarginalsBP(F, E, isMax)
 % initialization
 % you should set it to the correct value in your code
 M = [];
+if ~exist('isMax','var')
+   isMax = 0;
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % YOUR CODE HERE
