@@ -37,8 +37,8 @@ end;
 % there we have no idea of how the clusters look like, but now 
 % we are certain to use Bethe graph
 
-% Out of surprise, the example will provide us both the singleton factors
-% and pairwise factors.
+% Out of surprise, the example will provide us with 
+% both the singleton factors and the pairwise factors.
 P.clusterList = F;
 
 % We only need to fill out the edges, an edge exists and only exists

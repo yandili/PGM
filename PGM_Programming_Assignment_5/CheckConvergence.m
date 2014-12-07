@@ -23,9 +23,15 @@ thresh = 1.0e-6;
 % YOUR CODE HERE
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
+% mNew and mOld are matrix arrays each is a struct of vals
+for i = 1:size(mNew,1)
+  for j = 1:size(mNew,2)
+    if norm(mNew(i,j).val-mOld(i,j).val, 1) > thresh
+      converged = 0;
+      return
+    end
+  end
+end
+converged = 1; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 return;
