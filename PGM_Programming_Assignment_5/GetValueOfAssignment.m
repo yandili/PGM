@@ -11,7 +11,7 @@
 %
 % Copyright (C) Daphne Koller, Stanford University, 2012
 
-function v = GetValueOfAssignment(F, A, VO);
+function v = GetValueOfAssignment(F, A, VO)
 
 if (nargin == 2),
     indx = AssignmentToIndex(A, F.card);

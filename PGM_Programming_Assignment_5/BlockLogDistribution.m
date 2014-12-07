@@ -53,11 +53,28 @@ LogBS = zeros(1, d);
 %
 % Also you should have only ONE for-loop, as for-loops are VERY slow in matlab
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Instructions:
+% P(V|Parent, Other) = P(V|Parent) 
+%                    = P(V, Parent=*)/sigma_V(P(V,Parent=*))
+%     +proportional  = P(V, Parent=*)
+%                    = prod(Factors_involving_V, Observe Parent=*)
 
+% Find indices of factors involving V
+if length(V) == 1
+  VFactorsInd = G.var2factors{V};
+else
+  VFactorsInd = union(G.var2factors{V}); % union indices of factors and sort
+end
+
+A0 = A;
+for i = 1:d
+  A(V) = i; % assignment of V's
+  % Compute log probability of an assignment A in a distribution defined by F's
+  LogBS(i) = LogProbOfJointAssignment(F(VFactorsInd), A);
+  A = A0;
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Re-normalize to prevent underflow when you move back to probability space
 LogBS = LogBS - min(LogBS);
-
-
 

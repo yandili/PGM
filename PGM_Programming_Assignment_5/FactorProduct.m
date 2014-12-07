@@ -11,7 +11,9 @@
 %
 % Copyright (C) Daphne Koller, Stanford University, 2012
 
-function C = FactorProduct(A, B)
+function C = FactorProduct(A, B, isSum)
+
+if nargin < 3, isSum = 0; end
 
 % Check for empty factors
 if (isempty(A.var)), C = B; return; end;
@@ -40,8 +42,8 @@ C.var = union(A.var, B.var);
 % then, mapA = [2 1 3] and mapB = [3 4]; mapA(1) = 2 because A.var(1) = 3
 % and C.var(2) = 3, so A.var(1) == C.var(2).
 
-[dummy, mapA] = ismember(A.var, C.var);
-[dummy, mapB] = ismember(B.var, C.var);
+[~, mapA] = ismember(A.var, C.var);
+[~, mapB] = ismember(B.var, C.var);
 
 % Set the cardinality of variables in C
 C.card = zeros(1, length(C.var));
@@ -63,7 +65,10 @@ indxB = AssignmentToIndex(assignments(:, mapB), B.card);
 % YOUR CODE HERE:
 % Correctly populate the factor values of C
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C.val = A.val(indxA) .* B.val(indxB);
+if isSum == 0
+  C.val = A.val(indxA) .* B.val(indxB);
+else  % sum of logs
+  C.val = A.val(indxA) + B.val(indxB); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
