@@ -14,8 +14,8 @@
 %
 % Copyright (C) Daphne Koller, Stanford University, 2012
 
-function converged = CheckConvergence(mNew, mOld);
-converged = true;
+function converged = CheckConvergence(mNew, mOld)
+%converged = true;
 thresh = 1.0e-6;
 %converged should be 1 if converged, 0 otherwise.
 
@@ -26,7 +26,8 @@ thresh = 1.0e-6;
 % mNew and mOld are matrix arrays each is a struct of vals
 for i = 1:size(mNew,1)
   for j = 1:size(mNew,2)
-    if norm(mNew(i,j).val-mOld(i,j).val, 1) > thresh
+    %if norm(mNew(i,j).val-mOld(i,j).val, 1) > thresh
+    if MessageDelta(mNew(i,j), mOld(i,j)) > thresh
       converged = 0;
       return
     end
@@ -34,4 +35,9 @@ for i = 1:size(mNew,1)
 end
 converged = 1; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+return;
+
+% Get the max difference between the marginal entries of 2 messages -------
+function delta = MessageDelta(Mes1, Mes2)
+delta = max(abs(Mes1.val - Mes2.val));
 return;

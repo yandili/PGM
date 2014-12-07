@@ -18,7 +18,7 @@
 %
 % Copyright (C) Daphne Koller, Stanford University, 2012
 
-function [P MESSAGES] = ClusterGraphCalibrate(P,useSmartMP)
+function [P MESSAGES IntermediateMessages] = A_ClusterGraphCalibrate_Test(P, useSmartMP)
 
 if(~exist('useSmartMP','var'))
   useSmartMP = 0;
@@ -29,12 +29,16 @@ N = length(P.clusterList);
 MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 [edgeFromIndx, edgeToIndx] = find(P.edges ~= 0);
 
+testCtr = 1;
+IntermediateMessages = repmat(struct('var',[],'card',[],'val',[]), 1, 10);
+
 for m = 1:length(edgeFromIndx),
     i = edgeFromIndx(m);
     j = edgeToIndx(m);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % YOUR CODE HERE
+    %
     % Set the initial message values
     % MESSAGES(i,j) should be set to the initial value for the
     % message from cluster i to cluster j
@@ -42,12 +46,8 @@ for m = 1:length(edgeFromIndx),
     % The matlab/octave functions 'intersect' and 'find' may
     % be useful here (for making your code faster)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % search subelements in cluster j, return 0 if not found
-    indx = ismember(P.clusterList(i).var, P.clusterList(j).var);
+
     
-    MESSAGES(i,j).var = P.clusterList(i).var(logical(indx));
-    MESSAGES(i,j).card = P.clusterList(i).card(logical(indx));
-    MESSAGES(i,j).val = ones(1,prod(MESSAGES(i,j).card));
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end;
 
@@ -59,9 +59,11 @@ iteration = 0;
 
 lastMESSAGES = MESSAGES;
 
+x = []; y1 = []; y2 = []; y3 = [];
+
 while (1),
     iteration = iteration + 1;
-    [i, j] = GetNextClusters(P, MESSAGES, lastMESSAGES, iteration, useSmartMP); 
+    [i, j] = GetNextClusters(P, MESSAGES,lastMESSAGES, iteration, useSmartMP); 
     prevMessage = MESSAGES(i,j);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,37 +76,36 @@ while (1),
     % The function 'setdiff' may be useful to help you
     % obtain some speedup in this function
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    neighbors = find(P.edges(i,:));
-    parents = setdiff(neighbors, j);
-    for k = parents
-      MESSAGES(i,j) = FactorProduct(MESSAGES(k,i), P.clusterList(i));
-    end
-    summedOut = setdiff(MESSAGES(i,j).var, P.clusterList(j).var);
-    MESSAGES(i,j) = FactorMarginalization(MESSAGES(i,j), summedOut);
-
-    partition = sum(MESSAGES(i,j).val);
-    MESSAGES(i,j).val = MESSAGES(i,j).val./partition;
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if(useSmartMP==1)
-      lastMESSAGES(i,j)=prevMessage;
+    % make data for intermediate test
+    if iteration <= 5 || (iteration <= 105 && iteration >= 101)
+        IntermediateMessages(testCtr) = MESSAGES(i, j);
+        testCtr = testCtr + 1;
     end
     
+    if (useSmartMP == 1)
+    	lastMESSAGES(i,j) = prevMessage;
+    end
+     
     % Check for convergence every m iterations
-    if mod(iteration, length(edgeFromIndx)) == 0
+    if mod(iteration, length(edgeFromIndx)) == 0     
+        
         if (CheckConvergence(MESSAGES, lastMESSAGES))
             break;
         end
+        
         disp(['LBP Messages Passed: ', int2str(iteration), '...']);
-        if(useSmartMP~=1)
-          lastMESSAGES=MESSAGES;
+        if (useSmartMP ~= 1)
+        	lastMESSAGES = MESSAGES;
         end
     end
     
 end;
 toc;
 disp(['Total number of messages passed: ', num2str(iteration)]);
-
 
 % Compute final potentials and place them in P
 for m = 1:length(edgeFromIndx),
@@ -114,9 +115,8 @@ for m = 1:length(edgeFromIndx),
 end
 
 % Get the max difference between the marginal entries of 2 messages -------
-%function delta = MessageDelta(Mes1, Mes2)
-%delta = max(abs(Mes1.val - Mes2.val));
-%return;
-
+function delta = MessageDelta(Mes1, Mes2)
+    delta = max( abs(Mes1.val - Mes2.val) );
+return;
 
 
