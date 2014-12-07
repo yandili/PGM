@@ -56,11 +56,16 @@ end;
 % perform loopy belief propagation
 tic;
 iteration = 0;
+maxIter = 10000;
 
 lastMESSAGES = MESSAGES;
 
+figure(); hold on; % Additional quizes
+
 while (1),
     iteration = iteration + 1;
+    if iteration > maxIter, break; end;
+
     [i, j] = GetNextClusters(P, MESSAGES, lastMESSAGES, iteration, useSmartMP); 
     prevMessage = MESSAGES(i,j);
 
@@ -92,9 +97,18 @@ while (1),
     if(useSmartMP==1)
       lastMESSAGES(i,j)=prevMessage;
     end
+
     
     % Check for convergence every m iterations
     if mod(iteration, length(edgeFromIndx)) == 0
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Additional quizes 
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        plot(iteration, MessageDelta(MESSAGES(15,40), lastMESSAGES(15,40)), 'g*');
+        plot(iteration, MessageDelta(MESSAGES(17,2), lastMESSAGES(17,2)), 'bs');
+        plot(iteration, MessageDelta(MESSAGES(19,3), lastMESSAGES(19,3)), 'r+');
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
         if (CheckConvergence(MESSAGES, lastMESSAGES))
             break;
         end
@@ -117,9 +131,9 @@ for m = 1:length(edgeFromIndx),
 end
 
 % Get the max difference between the marginal entries of 2 messages -------
-%function delta = MessageDelta(Mes1, Mes2)
-%delta = max(abs(Mes1.val - Mes2.val));
-%return;
+function delta = MessageDelta(Mes1, Mes2)
+delta = max(abs(Mes1.val - Mes2.val));
+return;
 
 
 
