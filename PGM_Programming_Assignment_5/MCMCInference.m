@@ -121,7 +121,9 @@ for i = 1:max_iter
     %     foo2 = @foo;
     %     sol = foo2(bar);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Sampling all variables to obtain a new state
     A = Trans(A, G, F);
+    all_samples(i+1, :) = A;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
