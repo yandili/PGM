@@ -142,3 +142,14 @@ A = MHSWTrans(A, G, F, 1);
 
 function A = MHSWTrans2(A, G, F)
 A = MHSWTrans(A, G, F, 2);
+
+
+%% Example code for Assignment Question 5-4
+% [G, F] = ConstructToyNetwork(1, .1);
+% randi('seed',1);
+% for i = 1:2
+%    [M all_samples] = MCMCInference(G, F, [], 'Gibbs', 1, 1200, 1, repmat(i, 1, 16));
+%    samples_list{i} = all_samples;
+% end
+% ExM = ComputeExactMarginalsBP(F, [], 0);
+% VisualizeMCMCMarginals(samples_list, 1:length(G.names), G.card, F, 1500, ExM, 'Gibbs');

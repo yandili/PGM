@@ -19,6 +19,12 @@ p_acceptance = 0.0;
 % YOUR CODE HERE
 % Compute acceptance probability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% stationary dist of assignment A_prop 
+log_pi_prop = LogProbOfJointAssignment(F, A_prop); 
+% stationary dist of assignment A 
+log_pi = LogProbOfJointAssignment(F, A);
+% we can omit Q(x->x') = Q(x'->x)
+p_acceptance = min([1, exp(log_pi_prop - log_pi)]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
