@@ -60,18 +60,16 @@ LogBS = zeros(1, d);
 %                    = prod(Factors_involving_V, Observe Parent=*)
 
 % Find indices of factors involving V
-if length(V) == 1
-  VFactorsInd = G.var2factors{V};
-else
-  VFactorsInd = union(G.var2factors{V}); % union indices of factors and sort
+VFactorsInd = G.var2factors{V(1)};
+for i = 2:length(V)
+  % union indices of factors and sort
+  VFactorsInd = union(G.var2factors{V(i)}, VFactorsInd);
 end
 
-A0 = A;
 for i = 1:d
   A(V) = i; % assignment of V's
   % Compute log probability of an assignment A in a distribution defined by F's
   LogBS(i) = LogProbOfJointAssignment(F(VFactorsInd), A);
-  A = A0;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

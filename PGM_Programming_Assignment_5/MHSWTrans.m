@@ -48,9 +48,8 @@ if variant == 1
     % which a new label for Y is selected for variant 1 
     % :set the distribution R to be uniform
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    logR = zeros(1, d);
+    LogR = zeros(1, d);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 elseif variant == 2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % YOUR CODE HERE
@@ -61,7 +60,8 @@ elseif variant == 2
     % before implementing this, one of the generated
     % data structures may be useful in implementing this section
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    % the prob of selected_vars given the assignment of other vars (parents)
+    LogR = BlockLogDistribution(selected_vars, G, F, A);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 else
     disp('WARNING: Unrecognized Swendsen-Wang Variant');
@@ -101,8 +101,12 @@ p_acceptance = 0.0;
 log_pi_prop = LogProbOfJointAssignment(F, A_prop); 
 % stationary dist of assignment A 
 log_pi = LogProbOfJointAssignment(F, A);
+% log_pi ratio
+log_pi_ratio = log_pi_prop - log_pi;
+% logR of Y=l|X-Y, and logR of Y=l'|X-Y
+logR_ratio = LogR(A(selected_vars(1))) - LogR(A_prop(selected_vars));
 % compute acceptance probability by using pi and Q(x'->x)/Q(x->x')
-p_acceptance = min(1, exp(log_QY_ratio + log_pi_prop - log_pi))
+p_acceptance = min(1, exp(log_QY_ratio + log_pi_ratio + logR_ratio));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
