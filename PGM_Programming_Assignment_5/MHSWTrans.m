@@ -46,9 +46,11 @@ if variant == 1
     % YOUR CODE HERE
     % Specify the log of the distribution (LogR) from 
     % which a new label for Y is selected for variant 1 
+    % :set the distribution R to be uniform
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    logR = zeros(1, d);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 elseif variant == 2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % YOUR CODE HERE
@@ -95,6 +97,12 @@ p_acceptance = 0.0;
 % of variables, as well as some ratios used in computing
 % the acceptance probabilitiy.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% stationary dist of assignment A_prop 
+log_pi_prop = LogProbOfJointAssignment(F, A_prop); 
+% stationary dist of assignment A 
+log_pi = LogProbOfJointAssignment(F, A);
+% compute acceptance probability by using pi and Q(x'->x)/Q(x->x')
+p_acceptance = min(1, exp(log_QY_ratio + log_pi_prop - log_pi))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

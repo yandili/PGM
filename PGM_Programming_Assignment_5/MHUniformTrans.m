@@ -1,4 +1,4 @@
-% MHUNIFORMTRANS
+ MHUNIFORMTRANS
 %
 %  MCMC Metropolis-Hastings transition function that
 %  utilizes the uniform proposal distribution.
