@@ -1,4 +1,4 @@
- MHUNIFORMTRANS
+% MHUNIFORMTRANS
 %
 %  MCMC Metropolis-Hastings transition function that
 %  utilizes the uniform proposal distribution.
@@ -10,7 +10,6 @@
 % Copyright (C) Daphne Koller, Stanford University, 2012
 
 function A = MHUniformTrans(A, G, F)
-
 % Draw proposed new state from uniform distribution
 A_prop = ceil(rand(1, length(A)) .* G.card);
 
