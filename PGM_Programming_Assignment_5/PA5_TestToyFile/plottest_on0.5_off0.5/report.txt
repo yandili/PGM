@@ -1,0 +1,1 @@
+On diag: 0.5 Off diag: 0.5 Mix time: 400 Collect: 6000 Time consumed: 562.8903 sec.

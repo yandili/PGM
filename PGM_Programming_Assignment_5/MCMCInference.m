@@ -109,7 +109,7 @@ A = A0;
 max_iter = mix_time + num_samples * sampling_interval;
 all_samples = zeros(max_iter + 1, length(A));
 all_samples(1, :) = A0;
-disp('Riding the Markov Chrain... chugga chugga woo woo!');
+disp('Riding the Markov Chain... chugga chugga woo woo!');
 for i = 1:max_iter
     if mod(i, 25) == 0
         disp(['Iteration ', num2str(i)]);
