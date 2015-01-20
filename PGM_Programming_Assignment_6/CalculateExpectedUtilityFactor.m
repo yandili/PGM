@@ -17,7 +17,19 @@ function EUF = CalculateExpectedUtilityFactor( I )
   % YOUR CODE HERE...
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+  % This function differs Simple by 
+  % outputing a factor D whose value takes over possible decisions
+  EUF.var = I.DecisionFactors.var(1);
+  EUF.card = I.DecisionFactors.card(1);
+  EUF.val = zeros(1, EUF.card);
 
+  % All possible decision rules.
+  AllDs = [];
+  
+  for i = 1:length(AllDs)
+     I.DecisionFactors = AllDs(i);
+     EUF.val(i) = SimpleCalcExpectedUtility(I);
+  end
 
   
 end  

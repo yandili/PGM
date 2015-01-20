@@ -21,8 +21,20 @@ function EU = SimpleCalcExpectedUtility(I)
   % YOUR CODE HERE
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % List of all variables except for the parents of the utility function
+  V = setdiff(unique([F(:).var]),U.var);
 
- 
+  % Eliminate all variables results the expected utility
+  F2 = VariableElimination(F,V);
   
+  % I don't know why VariableElimination produces several factors instead of one.
+  % To work around it, I have to do factor product on those factors.
+  for i = 1:length(F2)
+    % Surprise that we don't normalize factors to CPDs
+    % Weight each utility by the probability of its parents
+    U = FactorProduct(F2(i),U);
+  end
   
+  EU = sum(U.val);
+
 end
