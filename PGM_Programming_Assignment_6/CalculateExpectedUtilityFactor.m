@@ -11,24 +11,27 @@ function EUF = CalculateExpectedUtilityFactor( I )
   % gives the conditional utility given each assignment for D.var
   %
   % Note - We assume I has a single decision node and utility node.
-  EUF = [];
+  EUF = []; % the miu factor in the instruction
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %
   % YOUR CODE HERE...
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-  % This function differs Simple by 
-  % outputing a factor D whose value takes over possible decisions
-  EUF.var = I.DecisionFactors.var(1);
-  EUF.card = I.DecisionFactors.card(1);
-  EUF.val = zeros(1, EUF.card);
+  % Different from the way we compute SimpleCalcExpectedUtility
+  % , where we group first the RandomFactors and DecisionFactors
+  % , now we seperate decision from others
+  F = [I.RandomFactors, I.UtilityFactors];
+  D = I.DecisionFactors;
 
-  % All possible decision rules.
-  AllDs = [];
+  % List of variables but for those in the decision factor
+  V = setdiff(unique([F(:).var]),D.var);
+
+  % Eliminate all variables results the expected utility
+  EUF_L = VariableElimination(F,V);
   
-  for i = 1:length(AllDs)
-     I.DecisionFactors = AllDs(i);
-     EUF.val(i) = SimpleCalcExpectedUtility(I);
+  EUF = EUF_L(1);
+  for i = 2:length(EUF_L)
+    EUF = FactorProduct(EUF,EUF_L(i));
   end
 
   
