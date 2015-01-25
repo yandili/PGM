@@ -16,23 +16,26 @@ function EUF = CalculateExpectedUtilityFactor( I )
   %
   % YOUR CODE HERE...
   %
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-  % Different from the way we compute SimpleCalcExpectedUtility
-  % , where we group first the RandomFactors and DecisionFactors
-  % , now we seperate decision from others
-  F = [I.RandomFactors, I.UtilityFactors];
-  D = I.DecisionFactors;
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  EUF = repmat(struct('var',[],'card',[],'val',[]), 1, length(I.UtilityFactors));
+  for k = 1:length(I.UtilityFactors)
+      % Different from the way we compute SimpleCalcExpectedUtility
+      % , where we group first the RandomFactors and DecisionFactors
+      % , now we seperate decision from others
+      F = [I.RandomFactors, I.UtilityFactors(k)];
+      D = I.DecisionFactors;
 
-  % List of variables but for those in the decision factor
-  V = setdiff(unique([F(:).var]),D.var);
+      % List of variables but for those in the decision factor
+      V = setdiff(unique([F(:).var]),D.var);
 
-  % Eliminate all variables results the expected utility
-  EUF_L = VariableElimination(F,V);
-  
-  EUF = EUF_L(1);
-  for i = 2:length(EUF_L)
-    EUF = FactorProduct(EUF,EUF_L(i));
+      % Eliminate all variables results the expected utility
+      EUF_L = VariableElimination(F,V);
+    
+      EUF(k) = EUF_L(1);
+      for i = 2:length(EUF_L)
+          EUF(k) = FactorProduct(EUF(k),EUF_L(i));
+      end
+
   end
-
   
 end  

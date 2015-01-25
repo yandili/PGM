@@ -1,5 +1,5 @@
 %% Change this to test different functions!
-testNum = 4;
+testNum = 5;
 
 if (~exist('TS','var') || true)
   %% This is based on TestCases to make it all more testable.
