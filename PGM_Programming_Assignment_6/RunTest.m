@@ -1,5 +1,5 @@
 %% Change this to test different functions!
-testNum = 2;
+testNum = 3;
 
 if (~exist('TS','var') || true)
   %% This is based on TestCases to make it all more testable.
@@ -44,7 +44,7 @@ if (~exist('TS','var') || true)
   TS(3).EUF = struct('var', [1,2], 'card', [2 2], 'val', [5.25 2.25 0.7 0.3]);
   TS(3).allEU = [7.5 5.55 2.95 1.0];
   TS(3).MEU = 7.5;
-  TS(3).OptDR = struct('var', [1,2], 'card', [2,2], 'val', [1,1,0,0]);
+  TS(3).OptDR = struct('var', [2,1], 'card', [2,2], 'val', [1,0,1,0]);
 
   %% Test case 4.
   I.RandomFactors = ...
